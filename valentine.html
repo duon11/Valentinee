@@ -3,209 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Món Quà Bí Mật</title>
+    <title>Gửi Hà 💖</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap');
 
         body {
             background-color: #ffe6e9;
             font-family: 'Nunito', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            flex-direction: column;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; flex-direction: column; overflow: hidden;
         }
 
-        /* Hiệu ứng nền trái tim bay */
+        /* Hiệu ứng nền */
         .bg-heart {
-            position: absolute;
-            top: -10vh;
+            position: absolute; top: -10vh;
             color: rgba(255, 182, 193, 0.5);
-            font-size: 2rem;
-            animation: fall linear infinite;
-            z-index: -1;
+            font-size: 2rem; animation: fall linear infinite; z-index: -1;
         }
-
         @keyframes fall {
             0% { transform: translateY(0) rotate(0deg); opacity: 1; }
             100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- MÀN HÌNH SETUP (Dành cho bạn) --- */
-        #setup-screen {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
-            max-width: 90%;
-            width: 400px;
-            z-index: 10;
-        }
-
         h1 {
-            color: #ff4d6d;
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
+            color: #ff4d6d; font-family: 'Dancing Script', cursive;
+            font-size: 3rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
-        input, textarea {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #ffccd5;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-family: inherit;
-        }
-
-        button {
-            background: #ff4d6d;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-            background: #ff2a55;
-        }
-
-        /* --- MÀN HÌNH QUÀ TẶNG (Dành cho người ấy) --- */
-        #gift-screen {
-            display: none; /* Ẩn mặc định */
-            text-align: center;
-            width: 100%;
-        }
-
-        .header-msg {
-            font-size: 1.5rem;
-            color: #590d22;
-            margin-bottom: 40px;
+        .sub-text {
+            color: #590d22; font-size: 1.2rem; margin-bottom: 40px;
         }
 
         .box-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
+            display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; z-index: 10;
         }
 
         .mystery-box {
-            width: 100px;
-            height: 100px;
+            width: 100px; height: 100px;
             background: linear-gradient(135deg, #ff8fa3, #ff4d6d);
             border-radius: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 3rem;
-            color: white;
-            cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 3rem; color: white; cursor: pointer;
             box-shadow: 0 8px 15px rgba(255, 77, 109, 0.4);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            transition: all 0.3s; position: relative;
         }
+        .mystery-box::before { content: "?"; }
+        .mystery-box:hover { transform: translateY(-10px) rotate(5deg); }
 
-        .mystery-box::before {
-            content: "?";
-        }
-
-        .mystery-box:hover {
-            transform: translateY(-10px) rotate(5deg);
-        }
-
-        .mystery-box.opened {
-            background: #fff0f3;
-            color: #ff4d6d;
-            pointer-events: none;
-            animation: none;
-        }
-
-        /* --- MODAL HIỂN THỊ BẤT NGỜ --- */
+        /* Modal hiển thị thư */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none; justify-content: center; align-items: center; z-index: 100;
         }
-
         .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 80%;
+            background: white; padding: 25px; border-radius: 20px;
+            text-align: center; max-width: 90%; width: 500px;
+            max-height: 80vh; overflow-y: auto; /* Cho phép cuộn nếu thư dài */
             animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
+            border: 4px solid #ffccd5;
         }
-
         @keyframes popIn {
             from { transform: scale(0); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
+        .letter-content {
+            text-align: justify; font-size: 1.05rem; line-height: 1.6;
+            color: #4a0a18; background: #fff0f3;
+            padding: 15px; border-radius: 10px; margin-top: 15px;
+        }
+
         .close-btn {
-            margin-top: 20px;
-            background: #590d22;
-            font-size: 0.9rem;
+            margin-top: 20px; background: #ff4d6d; color: white;
+            border: none; padding: 10px 25px; border-radius: 50px;
+            cursor: pointer; font-size: 1rem; font-weight: bold;
         }
-
-        /* Nội dung bất ngờ */
-        .big-heart {
-            font-size: 5rem;
-            color: red;
-            animation: heartbeat 1.5s infinite;
-        }
-        
-        .rose-icon {
-            font-size: 5rem;
-        }
-
+        .big-heart { color: red; animation: heartbeat 1.5s infinite; }
         @keyframes heartbeat {
-            0% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            50% { transform: scale(1); }
-            75% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); } 15% { transform: scale(1.3); }
+            30% { transform: scale(1); } 45% { transform: scale(1.3); } 100% { transform: scale(1); }
         }
-
     </style>
 </head>
 <body>
 
     <div id="hearts-bg"></div>
 
-    <div id="setup-screen">
-        <h1>Tạo Quà Valentine 💌</h1>
-        <p>Điền thông tin để tạo link gửi người ấy nhé!</p>
-        <input type="text" id="input-name" placeholder="Tên người nhận (VD: Em yêu)">
-        <textarea id="input-msg" rows="4" placeholder="Lời chúc bí mật của bạn..."></textarea>
-        <button onclick="createLink()">Tạo Link Ngay</button>
-    </div>
+    <h1>Gửi Nguyễn Thu Hà 💖</h1>
+    <p class="sub-text">Chọn một hộp quà may mắn nhé!</p>
 
-    <div id="gift-screen">
-        <h1 id="greeting">Happy Valentine!</h1>
-        <p class="header-msg">Chọn một hộp quà may mắn nhé ❤️</p>
-        
-        <div class="box-container">
-            <div class="mystery-box" onclick="openBox(1)"></div>
-            <div class="mystery-box" onclick="openBox(2)"></div>
-            <div class="mystery-box" onclick="openBox(3)"></div>
-        </div>
+    <div class="box-container">
+        <div class="mystery-box" onclick="openBox(1)"></div>
+        <div class="mystery-box" onclick="openBox(2)"></div>
+        <div class="mystery-box" onclick="openBox(3)"></div>
     </div>
 
     <div class="modal-overlay" id="modal">
@@ -216,13 +108,23 @@
     </div>
 
     <script>
-        // Tạo mưa trái tim nền
+        // --- NỘI DUNG THƯ CỦA BẠN (Đã được format đẹp) ---
+        const LOI_CHUC = `
+            <b>Xin chào cậu, là tớ Dương đây!</b><br><br>
+            Thật tiếc khi dịp Valentine vào đúng những ngày nghỉ tết ở quê, nên chúng mình không có nhiều cơ hội gặp nhau. Nhớ thật ấy đã thế mà một năm trôi qua rồi, thật hoài niệm quá đi TT.<br><br>
+            Tớ đã rất đắn đo suy nghĩ mãi về việc có thể chuẩn bị trước điều bất ngờ nhưng mà lại chẳng thể nghĩ ra cách nào hợp lý. Lúc đầu tớ định qua Hải Dương chơi với cậu nhưng sau lại suy nghĩ lại một chút, vì trong những ngày tết cậu và tớ còn bận bịu việc gia đình nên tớ đành nghĩ xem có thể còn cách nào không. Nhưng mà không sao tớ đã dự định tạo bất ngờ này rùi, dù không ngọt ngào như chocolate.<br><br>
+            Những lời văn có hơi thô và tớ còn nhiều thiếu sót, nhưng đây cũng có thể coi là một phương thức mới nhixi hiihi. Tớ biết sắp tới còn nhiều khó khăn còn nhiều lo lắng, tớ biết để cậu phải nặng lòng nhiều. Tớ thật sự rất ghét tớ ở điểm ấy. Nhưng cũng thật sự cũng khó khăn.<br><br>
+            Tớ chỉ có thể từng ngày mà chứng minh thui, thật sự còn quá sớm để đưa ra kết luận, nhưng tớ luôn tin yêu tất cả. Đặc biệt là cậu.<br><br>
+            <b style="color: #d63384; font-size: 1.2rem;">Tớ yêu Hà nhiều lắm! Nhớ Hà rất nhiều!!</b><br><br>
+            Mong rằng ngày lễ này thật nhiều điều ngọt ngào, ngon hơn cả chocolate dành tới cậu. Yêuuuu Hàaaa ❤️
+        `;
+
+        // --- CODE XỬ LÝ ---
         function createHeartsBg() {
             const container = document.getElementById('hearts-bg');
             for(let i=0; i<20; i++) {
                 let heart = document.createElement('div');
-                heart.className = 'bg-heart';
-                heart.innerHTML = '❤';
+                heart.className = 'bg-heart'; heart.innerHTML = '❤';
                 heart.style.left = Math.random() * 100 + 'vw';
                 heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
                 heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
@@ -231,73 +133,23 @@
         }
         createHeartsBg();
 
-        // Xử lý URL để lấy dữ liệu
-        const urlParams = new URLSearchParams(window.location.search);
-        const nameParam = urlParams.get('name');
-        const msgParam = urlParams.get('msg');
-
-        // Logic hiển thị màn hình
-        if (nameParam && msgParam) {
-            // Nếu có tên và lời nhắn trên link -> Chế độ người nhận
-            document.getElementById('setup-screen').style.display = 'none';
-            document.getElementById('gift-screen').style.display = 'block';
-            document.getElementById('greeting').innerText = `Gửi ${nameParam} 💖`;
-        } else {
-            // Nếu không có -> Chế độ người tạo
-            document.getElementById('setup-screen').style.display = 'block';
-        }
-
-        // Hàm tạo link (Dành cho người gửi)
-        function createLink() {
-            const name = document.getElementById('input-name').value;
-            const msg = document.getElementById('input-msg').value;
-
-            if(!name || !msg) {
-                alert("Bạn chưa nhập đủ thông tin kìa!");
-                return;
-            }
-
-            // Mã hóa thông tin vào URL
-            const currentUrl = window.location.href.split('?')[0];
-            const finalUrl = `${currentUrl}?name=${encodeURIComponent(name)}&msg=${encodeURIComponent(msg)}`;
-            
-            // Copy vào clipboard hoặc mở thử
-            prompt("Copy đường link này gửi cho người ấy nhé:", finalUrl);
-        }
-
-        // Hàm mở hộp quà
         function openBox(id) {
             const modal = document.getElementById('modal');
             const modalBody = document.getElementById('modal-body');
             modal.style.display = 'flex';
-
-            let content = '';
             
+            let content = '';
             if (id === 1) {
-                // Hộp 1: Bông hồng
-                content = `
-                    <div class="rose-icon">🌹</div>
-                    <h2>Một bông hồng cho em!</h2>
-                    <p>Vì em xinh đẹp như một đóa hoa.</p>
-                `;
+                content = '<div style="font-size:5rem">🌹</div><h2>Một bông hồng!</h2><p>Vì cậu xinh đẹp như một đóa hoa.</p>';
             } else if (id === 2) {
-                // Hộp 2: Trái tim đập
-                content = `
-                    <div class="big-heart">❤️</div>
-                    <h2>Trái tim của anh!</h2>
-                    <p>Nó đã thuộc về em từ lâu rồi.</p>
-                `;
+                content = '<div class="big-heart" style="font-size:5rem">❤️</div><h2>Trái tim của tớ!</h2><p>Nó đã thuộc về cậu từ lâu rồi.</p>';
             } else if (id === 3) {
-                // Hộp 3: Lời nhắn bí mật (Lấy từ URL)
-                // Giải mã tin nhắn (đề phòng xuống dòng)
-                const messageDecoded = decodeURIComponent(msgParam).replace(/\n/g, "<br>");
                 content = `
                     <div style="font-size:3rem">💌</div>
-                    <h2>Lời nhắn bí mật:</h2>
-                    <p style="font-size: 1.2rem; color: #590d22; font-style: italic;">"${messageDecoded}"</p>
+                    <h2 style="color:#d63384">Lời nhắn bí mật:</h2>
+                    <div class="letter-content">${LOI_CHUC}</div>
                 `;
             }
-
             modalBody.innerHTML = content;
         }
 
@@ -305,14 +157,5 @@
             document.getElementById('modal').style.display = 'none';
         }
     </script>
-    const LOI_CHUC = `
-        Xin chào cậu, là tớ Dương đây! <br><br>
-        Thật tiếc khi dịp Valentine vào đúng những ngày nghỉ tết ở quê, nên chúng mình không có nhiều cơ hội gặp nhau. Nhớ thật ấy đã thế mà một năm trôi qua rồi, thật hoài niệm quá đi TT. <br><br>
-        Tớ đã rất đắn đo suy nghĩ mãi về việc có thể chuẩn bị trước điều bất ngờ nhưng mà lại chẳng thể  nghĩ ra cách nào hợp lý. Lúc đầu tớ định qua Hải Dương chơi với cậu nhưng sau lại suy nghĩ lại một chút, vì trong những ngày tết cậu và tớ  còn bận bịu việc gia đình nên tớ đành nghĩ xem có thể còn cách nào không. Nhưng mà khọng sao tớ đã dự định tạo bất ngờ này ròi, dù không ngọt ngào như chocolate. Những lời văn có hơi thô và tớ còn nhiều thiếu xót, nhưng đây cũng có thể coi là một phương thức mới nhixi hiihi. Tớ biết sắp tới còn nhiều khó khăn còn nhiều lo lắng, tớ biết để cậu phải nặng lòng nhiều. Tớ thật sự rất ghét tớ ở điểm ấy. Nhưng cũng thật sự cũng khó khăn. <br><br>
-        Tớ chỉ có thể từng ngày mà chứng minh thui, thật sự còn quá sớm để đưa ra kết luận, nhưng tớ luôn tin yêu tất cả. Đặc biệt là cậu. <br><br>
-        <b>Tớ yêu Hà nhiều lắm! Nhớ Hà rất nhiều!!</b> <br><br>
-        Mong rằng ngày lễ này thật nhiều điều ngọt ngào, ngọt hơn cả chocolate dành tới cậu. Yêuuuu Hàaaa ❤️
-    `;
 </body>
 </html>
-
