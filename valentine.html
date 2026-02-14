@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Món Quà Bí Mật</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700&display=swap');
+
+        body {
+            background-color: #ffe6e9;
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        /* Hiệu ứng nền trái tim bay */
+        .bg-heart {
+            position: absolute;
+            top: -10vh;
+            color: rgba(255, 182, 193, 0.5);
+            font-size: 2rem;
+            animation: fall linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- MÀN HÌNH SETUP (Dành cho bạn) --- */
+        #setup-screen {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 90%;
+            width: 400px;
+            z-index: 10;
+        }
+
+        h1 {
+            color: #ff4d6d;
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ffccd5;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        button {
+            background: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #ff2a55;
+        }
+
+        /* --- MÀN HÌNH QUÀ TẶNG (Dành cho người ấy) --- */
+        #gift-screen {
+            display: none; /* Ẩn mặc định */
+            text-align: center;
+            width: 100%;
+        }
+
+        .header-msg {
+            font-size: 1.5rem;
+            color: #590d22;
+            margin-bottom: 40px;
+        }
+
+        .box-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mystery-box {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #ff8fa3, #ff4d6d);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 8px 15px rgba(255, 77, 109, 0.4);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .mystery-box::before {
+            content: "?";
+        }
+
+        .mystery-box:hover {
+            transform: translateY(-10px) rotate(5deg);
+        }
+
+        .mystery-box.opened {
+            background: #fff0f3;
+            color: #ff4d6d;
+            pointer-events: none;
+            animation: none;
+        }
+
+        /* --- MODAL HIỂN THỊ BẤT NGỜ --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 80%;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            margin-top: 20px;
+            background: #590d22;
+            font-size: 0.9rem;
+        }
+
+        /* Nội dung bất ngờ */
+        .big-heart {
+            font-size: 5rem;
+            color: red;
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        .rose-icon {
+            font-size: 5rem;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+            75% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="hearts-bg"></div>
+
+    <div id="setup-screen">
+        <h1>Tạo Quà Valentine 💌</h1>
+        <p>Điền thông tin để tạo link gửi người ấy nhé!</p>
+        <input type="text" id="input-name" placeholder="Tên người nhận (VD: Em yêu)">
+        <textarea id="input-msg" rows="4" placeholder="Lời chúc bí mật của bạn..."></textarea>
+        <button onclick="createLink()">Tạo Link Ngay</button>
+    </div>
+
+    <div id="gift-screen">
+        <h1 id="greeting">Happy Valentine!</h1>
+        <p class="header-msg">Chọn một hộp quà may mắn nhé ❤️</p>
+        
+        <div class="box-container">
+            <div class="mystery-box" onclick="openBox(1)"></div>
+            <div class="mystery-box" onclick="openBox(2)"></div>
+            <div class="mystery-box" onclick="openBox(3)"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <div id="modal-body"></div>
+            <button class="close-btn" onclick="closeModal()">Đóng lại</button>
+        </div>
+    </div>
+
+    <script>
+        // Tạo mưa trái tim nền
+        function createHeartsBg() {
+            const container = document.getElementById('hearts-bg');
+            for(let i=0; i<20; i++) {
+                let heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                heart.style.fontSize = (Math.random() * 1 + 1) + 'rem';
+                container.appendChild(heart);
+            }
+        }
+        createHeartsBg();
+
+        // Xử lý URL để lấy dữ liệu
+        const urlParams = new URLSearchParams(window.location.search);
+        const nameParam = urlParams.get('name');
+        const msgParam = urlParams.get('msg');
+
+        // Logic hiển thị màn hình
+        if (nameParam && msgParam) {
+            // Nếu có tên và lời nhắn trên link -> Chế độ người nhận
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('gift-screen').style.display = 'block';
+            document.getElementById('greeting').innerText = `Gửi ${nameParam} 💖`;
+        } else {
+            // Nếu không có -> Chế độ người tạo
+            document.getElementById('setup-screen').style.display = 'block';
+        }
+
+        // Hàm tạo link (Dành cho người gửi)
+        function createLink() {
+            const name = document.getElementById('input-name').value;
+            const msg = document.getElementById('input-msg').value;
+
+            if(!name || !msg) {
+                alert("Bạn chưa nhập đủ thông tin kìa!");
+                return;
+            }
+
+            // Mã hóa thông tin vào URL
+            const currentUrl = window.location.href.split('?')[0];
+            const finalUrl = `${currentUrl}?name=${encodeURIComponent(name)}&msg=${encodeURIComponent(msg)}`;
+            
+            // Copy vào clipboard hoặc mở thử
+            prompt("Copy đường link này gửi cho người ấy nhé:", finalUrl);
+        }
+
+        // Hàm mở hộp quà
+        function openBox(id) {
+            const modal = document.getElementById('modal');
+            const modalBody = document.getElementById('modal-body');
+            modal.style.display = 'flex';
+
+            let content = '';
+            
+            if (id === 1) {
+                // Hộp 1: Bông hồng
+                content = `
+                    <div class="rose-icon">🌹</div>
+                    <h2>Một bông hồng cho em!</h2>
+                    <p>Vì em xinh đẹp như một đóa hoa.</p>
+                `;
+            } else if (id === 2) {
+                // Hộp 2: Trái tim đập
+                content = `
+                    <div class="big-heart">❤️</div>
+                    <h2>Trái tim của anh!</h2>
+                    <p>Nó đã thuộc về em từ lâu rồi.</p>
+                `;
+            } else if (id === 3) {
+                // Hộp 3: Lời nhắn bí mật (Lấy từ URL)
+                // Giải mã tin nhắn (đề phòng xuống dòng)
+                const messageDecoded = decodeURIComponent(msgParam).replace(/\n/g, "<br>");
+                content = `
+                    <div style="font-size:3rem">💌</div>
+                    <h2>Lời nhắn bí mật:</h2>
+                    <p style="font-size: 1.2rem; color: #590d22; font-style: italic;">"${messageDecoded}"</p>
+                `;
+            }
+
+            modalBody.innerHTML = content;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
